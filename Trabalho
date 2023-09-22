@@ -1,2 +1,121 @@
 Trabalho AeroSales
-FLA 2 X 1 SP
+class Voo {
+    private int numeroVoo;
+    private String origem;
+    private String destino;
+    private String horarioPartida;
+    private String horarioChegada;
+    private int capacidadeMaxima;
+    private List<Passageiro> passageirosReservados = new ArrayList<>();
+
+    public Voo(int numeroVoo, String origem, String destino, String horarioPartida, String horarioChegada, int capacidadeMaxima) {
+        this.numeroVoo = numeroVoo;
+        this.origem = origem;
+        this.destino = destino;
+        this.horarioPartida = horarioPartida;
+        this.horarioChegada = horarioChegada;
+        this.capacidadeMaxima = capacidadeMaxima;
+    }
+
+    public int getNumeroVoo() {
+        return numeroVoo;
+    }
+
+    public boolean adicionarPassageiro(Passageiro passageiro) {
+        if (passageirosReservados.size() < capacidadeMaxima) {
+            passageirosReservados.add(passageiro);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean realizarCheckIn(Passageiro passageiro) {
+        return passageirosReservados.contains(passageiro);
+    }
+
+    public List<Passageiro> getPassageirosReservados() {
+        return passageirosReservados;
+    }
+}
+
+class Passageiro {
+    private String nome;
+    private int idade;
+    private String cpf;
+    private String email;
+
+    public Passageiro(String nome, int idade, String cpf, String email) {
+        this.nome = nome;
+        this.idade = idade;
+        this.cpf = cpf;
+        this.email = email;
+    }
+}
+
+public class AeroportoSistema {
+    private static List<Voo> voos = new ArrayList<>();
+    private static Queue<Passageiro> reservasPendentes = new LinkedList<>();
+    private static Stack<Passageiro> passageirosCheckIn = new Stack<>();
+
+    public static void main(String[] args) {
+        // Exemplo de uso:
+        Voo voo1 = new Voo(2904, "Origem1", "Destino1", "10:00", "12:00", 100);
+        voos.add(voo1);
+
+        Passageiro passageiro1 = new Passageiro("Nome1", 30, "123456789", "email1@example.com");
+
+        // Realizar uma reserva
+        if (realizarReserva(voo1, passageiro1)) {
+            System.out.println("Reserva realizada com sucesso.");
+        } else {
+            System.out.println("O voo está cheio. Reserva não foi realizada.");
+        }
+
+        // Administrador processa as reservas pendentes (simulação)
+        processarReservasPendentes();
+
+        // Realizar o check-in
+        if (realizarCheckIn(voo1, passageiro1)) {
+            System.out.println("Check-in realizado com sucesso.");
+        } else {
+            System.out.println("Check-in não foi possível.");
+        }
+    }
+
+    public static boolean realizarReserva(Voo voo, Passageiro passageiro) {
+        if (voo.adicionarPassageiro(passageiro)) {
+            return true;
+        } else {
+            reservasPendentes.offer(passageiro);
+            return false;
+        }
+    }
+
+    public static void processarReservasPendentes() {
+        // Simulação do processamento das reservas pendentes pelo administrador
+        while (!reservasPendentes.isEmpty()) {
+            Passageiro passageiro = reservasPendentes.poll();
+            Voo vooDisponivel = encontrarVooDisponivel();
+            if (vooDisponivel != null) {
+                vooDisponivel.adicionarPassageiro(passageiro);
+            }
+        }
+    }
+
+    public static boolean realizarCheckIn(Voo voo, Passageiro passageiro) {
+        if (voo.realizarCheckIn(passageiro)) {
+            passageirosCheckIn.push(passageiro);
+            return true;
+        }
+        return false;
+    }
+
+    public static Voo encontrarVooDisponivel() {
+        for (Voo voo : voos) {
+            if (voo.getPassageirosReservados().size() < voo.getCapacidadeMaxima()) {
+                return voo;
+            }
+        }
+        return null;
+    }
+}
