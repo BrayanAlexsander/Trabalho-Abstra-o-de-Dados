@@ -1,100 +1,61 @@
 //AeroSales
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
 import java.util.Scanner;
 
 class Voo {
-    private int numeroVoo;
-    private int capacidadeMaxima;
-    private ArrayList<Passageiro> passageiros;
+    // ... outros membros da classe ...
 
-    public Voo(int numeroVoo, int capacidadeMaxima) {
-        this.numeroVoo = numeroVoo;
-        this.capacidadeMaxima = capacidadeMaxima;
-        this.passageiros = new ArrayList<>();
+    public String getOrigem() {
+        return origem;
     }
 
-    public int getNumeroVoo() {
-        return numeroVoo;
+    public String getDestino() {
+        return destino;
     }
 
-    public boolean adicionarPassageiro(Passageiro passageiro) {
-        if (passageiros.size() < capacidadeMaxima) {
-            passageiros.add(passageiro);
+    // ... outros métodos da classe ...
+    int numero;
+    String origem;
+    String destino;
+    String horarioPartida;
+    String horarioChegada;
+    int maxPassageiros;
+    List<Passageiro> reservasPendentes;
+
+    public Voo(int numero, String origem, String destino, String horarioPartida, String horarioChegada, int maxPassageiros) {
+        this.numero = numero;
+        this.origem = origem;
+        this.destino = destino;
+        this.horarioPartida = horarioPartida;
+        this.horarioChegada = horarioChegada;
+        this.maxPassageiros = maxPassageiros;
+        this.reservasPendentes = new ArrayList<>();
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public boolean adicionarReservaPendente(Passageiro passageiro) {
+        if (reservasPendentes.size() < maxPassageiros) {
+            reservasPendentes.add(passageiro);
             return true;
         }
         return false;
     }
 
-    public String toString() {
-        return "Voo #" + numeroVoo + " - Passageiros: " + passageiros.size() + "/" + capacidadeMaxima;
-    }
-}
-
-class Passageiro {
-    private String nome;
-
-    public Passageiro(String nome) {
-        this.nome = nome;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-}
-
-class HistoricoVoo {
-    private ArrayList<Voo> voosReservados;
-
-    public HistoricoVoo() {
-        voosReservados = new ArrayList<>();
-    }
-
-    public void adicionarVoo(Voo voo) {
-        voosReservados.add(voo);
-    }
-
-    public ArrayList<Voo> getVoosReservados() {
-        return voosReservados;
-    }
-}
-
-public class Aeroporto {
-    public static void main(String[] args) {
-        ArrayList<Voo> voos = new ArrayList<>();
-        HistoricoVoo historicoVoo = new HistoricoVoo(); // Crie um histórico de voos
-
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("1. Reservar Voo");
-            System.out.println("2. Exibir Histórico de Voos");
-            System.out.println("3. Sair");
-            System.out.print("Escolha uma opção: ");
-
-            int escolha = scanner.nextInt();
-
-            switch (escolha) {
-                case 1:
-                    System.out.print("Digite o número do voo: ");
-                    int numeroVoo = scanner.nextInt();
-                    Voo voo = new Voo(numeroVoo, 100); // Defina a capacidade máxima desejada
-                    voos.add(voo);
-                    historicoVoo.adicionarVoo(voo); // Adicione o voo ao histórico
-                    System.out.println("Voo #" + numeroVoo + " reservado.");
-                    break;
-                case 2:
-                    System.out.println("Histórico de Voos:");
-                    ArrayList<Voo> voosReservados = historicoVoo.getVoosReservados();
-                    for (Voo v : voosReservados) {
-                        System.out.println(v.toString());
-                    }
-                    break;
-                case 3:
-                    System.out.println("Saindo do sistema.");
-                    System.exit(0);
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
-            }
+    public void processarReservas() {
+        while (!reservasPendentes.isEmpty()) {
+            Passageiro passageiro = reservasPendentes.remove(0);
+            System.out.println("Reserva confirmada para o voo " + numero + " por " + passageiro.getNome() + ".");
         }
+    }
+
+    public boolean estaCheio() {
+        return reservasPendentes.size() >= maxPassageiros;
     }
 }
