@@ -134,3 +134,50 @@ public class SistemaAeroporto {
                     }
                     break;
 
+case 2:
+                    for (Voo voo : voosDisponiveis) {
+                        if (!voo.estaCheio()) {
+                            System.out.println("Existem reservas pendentes para o voo " + voo.getNumero());
+                        }
+                    }
+                    while (!filaReservasPendentes.isEmpty()) {
+                        Passageiro passageiro = filaReservasPendentes.poll();
+                        System.out.println("Reserva confirmada para o voo por " + passageiro.getNome());
+                        passageirosCheckin.push(passageiro);
+                    }
+                    break;
+                case 3:
+                    System.out.print("Digite seu nome para fazer o check-in: ");
+                    String nomeCheckin = scanner.nextLine();
+                    boolean encontrado = false;
+                    for (Passageiro passageiro : passageirosCheckin) {
+                        if (passageiro.getNome().equals(nomeCheckin)) {
+                            System.out.println("Você já fez o check-in.");
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                    if (!encontrado) {
+                        Passageiro novoPassageiro = new Passageiro(nomeCheckin, 0, "", "");
+                        passageirosCheckin.push(novoPassageiro);
+                        System.out.println("Check-in realizado por " + novoPassageiro.getNome() + ".");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Voos disponíveis:");
+                    for (Voo voo : voosDisponiveis) {
+                        String status = voo.estaCheio() ? "cheio" : voo.reservasPendentes.isEmpty() ? "disponível" : "com reservas pendentes";
+                        System.out.println("Número: " + voo.getNumero() + ", Origem: " + voo.getOrigem() + ", Destino: " + voo.getDestino() + ", Status: " + status);
+                    }
+                    break;
+                case 5:
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+
+
+            }
+        }
+    }
+}
