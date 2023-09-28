@@ -42,14 +42,33 @@ class Passageiro {
     }
 }
 
+class HistoricoVoo {
+    private ArrayList<Voo> voosReservados;
+
+    public HistoricoVoo() {
+        voosReservados = new ArrayList<>();
+    }
+
+    public void adicionarVoo(Voo voo) {
+        voosReservados.add(voo);
+    }
+
+    public ArrayList<Voo> getVoosReservados() {
+        return voosReservados;
+    }
+}
+
 public class Aeroporto {
     public static void main(String[] args) {
         ArrayList<Voo> voos = new ArrayList<>();
+        HistoricoVoo historicoVoo = new HistoricoVoo(); // Crie um histórico de voos
+
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("1. Reservar Voo");
-            System.out.println("2. Sair");
+            System.out.println("2. Exibir Histórico de Voos");
+            System.out.println("3. Sair");
             System.out.print("Escolha uma opção: ");
 
             int escolha = scanner.nextInt();
@@ -60,9 +79,17 @@ public class Aeroporto {
                     int numeroVoo = scanner.nextInt();
                     Voo voo = new Voo(numeroVoo, 100); // Defina a capacidade máxima desejada
                     voos.add(voo);
+                    historicoVoo.adicionarVoo(voo); // Adicione o voo ao histórico
                     System.out.println("Voo #" + numeroVoo + " reservado.");
                     break;
                 case 2:
+                    System.out.println("Histórico de Voos:");
+                    ArrayList<Voo> voosReservados = historicoVoo.getVoosReservados();
+                    for (Voo v : voosReservados) {
+                        System.out.println(v.toString());
+                    }
+                    break;
+                case 3:
                     System.out.println("Saindo do sistema.");
                     System.exit(0);
                 default:
