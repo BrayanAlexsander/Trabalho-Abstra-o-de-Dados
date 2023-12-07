@@ -1,8 +1,6 @@
 //AeroSales
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
 import java.util.Scanner;
 
@@ -80,8 +78,6 @@ class Passageiro {
 public class SistemaAeroporto {
     public static void main(String[] args) {
         List<Voo> voosDisponiveis = new ArrayList<>();
-        Queue<Passageiro> filaReservasPendentes = new LinkedList<>();
-        Stack<Passageiro> passageirosCheckin = new Stack<>();
 
         // Exemplo de voos disponíveis
         voosDisponiveis.add(new Voo(2014, "São Paulo", "Rio de Janeiro", "08:00", "09:30", 2));
@@ -91,93 +87,121 @@ public class SistemaAeroporto {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\nOpções:");
-            System.out.println("1. Fazer reserva");
-            System.out.println("2. Processar reservas pendentes");
-            System.out.println("3. Fazer check-in");
-            System.out.println("4. Exibir informações sobre voos");
-            System.out.println("5. Sair");
-
+            exibirMenu();
             int opcao = scanner.nextInt();
-            scanner.nextLine();  // Consumir a quebra de linha
+            scanner.nextLine(); // Consumir a quebra de linha
 
             switch (opcao) {
                 case 1:
-                    System.out.print("Digite o número do voo: ");
-                    int numeroVoo = scanner.nextInt();
-                    Voo vooSelecionado = null;
-                    for (Voo voo : voosDisponiveis) {
-                        if (voo.getNumero() == numeroVoo) {
-                            vooSelecionado = voo;
-                            break;
-                        }
-                    }
-                    if (vooSelecionado != null) {
-                        System.out.print("Digite seu nome: ");
-                        String nome = scanner.nextLine();
-                        scanner.nextLine();
-                        System.out.print("Digite sua idade: ");
-                        int idade = scanner.nextInt();
-                        scanner.nextLine();  // Consumir a quebra de linha
-                        System.out.print("Digite seu CPF: ");
-                        String cpf = scanner.nextLine();
-                        System.out.print("Digite seu e-mail: ");
-                        String email = scanner.nextLine();
-                        Passageiro passageiro = new Passageiro(nome, idade, cpf, email);
-                        if (vooSelecionado.adicionarReservaPendente(passageiro)) {
-                            System.out.println("Reserva pendente para o voo " + vooSelecionado.getNumero() + " feita por " + passageiro.getNome() + ".");
-                        } else {
-                            System.out.println("O voo " + vooSelecionado.getNumero() + " está cheio. Não é possível fazer a reserva.");
-                        }
-                    } else {
-                        System.out.println("Voo não encontrado.");
-                    }
+                    fazerReserva(voosDisponiveis, scanner);
                     break;
-
-case 2:
-                    for (Voo voo : voosDisponiveis) {
-                        if (!voo.estaCheio()) {
-                            System.out.println("Existem reservas pendentes para o voo " + voo.getNumero());
-                        }
-                    }
-                    while (!filaReservasPendentes.isEmpty()) {
-                        Passageiro passageiro = filaReservasPendentes.poll();
-                        System.out.println("Reserva confirmada para o voo por " + passageiro.getNome());
-                        passageirosCheckin.push(passageiro);
-                    }
+                case 2:
+                    processarReservas(voosDisponiveis);
                     break;
                 case 3:
-                    System.out.print("Digite seu nome para fazer o check-in: ");
-                    String nomeCheckin = scanner.nextLine();
-                    boolean encontrado = false;
-                    for (Passageiro passageiro : passageirosCheckin) {
-                        if (passageiro.getNome().equals(nomeCheckin)) {
-                            System.out.println("Você já fez o check-in.");
-                            encontrado = true;
-                            break;
-                        }
-                    }
-                    if (!encontrado) {
-                        Passageiro novoPassageiro = new Passageiro(nomeCheckin, 0, "", "");
-                        passageirosCheckin.push(novoPassageiro);
-                        System.out.println("Check-in realizado por " + novoPassageiro.getNome() + ".");
-                    }
+                    fazerCheckin(scanner);
                     break;
                 case 4:
-                    System.out.println("Voos disponíveis:");
-                    for (Voo voo : voosDisponiveis) {
-                        String status = voo.estaCheio() ? "cheio" : voo.reservasPendentes.isEmpty() ? "disponível" : "com reservas pendentes";
-                        System.out.println("Número: " + voo.getNumero() + ", Origem: " + voo.getOrigem() + ", Destino: " + voo.getDestino() + ", Status: " + status);
-                    }
+                    exibirInformacoesVoos(voosDisponiveis);
                     break;
                 case 5:
+                    System.out.println("Saindo do sistema. Obrigado!");
                     scanner.close();
                     System.exit(0);
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
-
-
             }
         }
     }
+
+    private static void fazerCheckin(Scanner scanner) {
+    }
+
+    private static void exibirMenu() {
+        System.out.println("\nOpções:");
+        System.out.println("1. Fazer reserva");
+        System.out.println("2. Processar reservas pendentes");
+        System.out.println("3. Fazer check-in");
+        System.out.println("4. Exibir informações sobre voos");
+        System.out.println("5. Sair");
+        System.out.print("Escolha uma opção: ");
+    }
+
+    private static void fazerReserva(List<Voo> voosDisponiveis, Scanner scanner) {
+        System.out.print("Digite o número do voo: ");
+        int numeroVoo = scanner.nextInt();
+        Voo vooSelecionado = null;
+
+        for (Voo voo : voosDisponiveis) {
+            if (voo.getNumero() == numeroVoo) {
+                vooSelecionado = voo;
+                break;
+            }
+        }
+
+        if (vooSelecionado != null) {
+            System.out.print("Digite seu nome: ");
+            String nome = scanner.next(); // Use next() para ler apenas uma palavra
+            System.out.print("Digite sua idade: ");
+            int idade = scanner.nextInt();
+            scanner.nextLine(); // Consumir a quebra de linha
+            System.out.print("Digite seu CPF: ");
+            String cpf = scanner.nextLine();
+            System.out.print("Digite seu e-mail: ");
+            String email = scanner.nextLine();
+
+            Passageiro passageiro = new Passageiro(nome, idade, cpf, email);
+
+            if (vooSelecionado.adicionarReservaPendente(passageiro)) {
+                System.out.println("Reserva pendente para o voo " + vooSelecionado.getNumero() +
+                        " feita por " + passageiro.getNome() + ".");
+            } else {
+                System.out.println("O voo " + vooSelecionado.getNumero() + " está cheio. Não é possível fazer a reserva.");
+            }
+        } else {
+            System.out.println("Voo não encontrado.");
+        }
+    }
+
+
+    private static void processarReservas(List<Voo> voosDisponiveis) {
+        for (Voo voo : voosDisponiveis) {
+            if (!voo.estaCheio()) {
+                System.out.println("Existem reservas pendentes para o voo " + voo.getNumero());
+                voo.processarReservas();
+            }
+        }
+    }
+
+
+    private static void fazerCheckin(Scanner scanner, Stack<Passageiro> passageirosCheckin) {
+        System.out.print("Digite seu nome para fazer o check-in: ");
+        String nomeCheckin = scanner.nextLine();
+        boolean encontrado = false;
+
+        for (Passageiro passageiro : passageirosCheckin) {
+            if (passageiro.getNome().equals(nomeCheckin)) {
+                System.out.println("Você já fez o check-in.");
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            Passageiro novoPassageiro = new Passageiro(nomeCheckin, 0, "", "");
+            passageirosCheckin.push(novoPassageiro);
+            System.out.println("Check-in realizado por " + novoPassageiro.getNome() + ".");
+        }
+    }
+
+
+    private static void exibirInformacoesVoos(List<Voo> voosDisponiveis) {
+        System.out.println("Voos disponíveis:");
+        for (Voo voo : voosDisponiveis) {
+            String status = voo.estaCheio() ? "cheio" : voo.reservasPendentes.isEmpty() ? "disponível" : "com reservas pendentes";
+            System.out.println("Número: " + voo.getNumero() + ", Origem: " + voo.getOrigem() +
+                    ", Destino: " + voo.getDestino() + ", Status: " + status);
+        }
+    }
+
 }
