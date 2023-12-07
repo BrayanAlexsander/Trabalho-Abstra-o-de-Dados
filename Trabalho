@@ -4,6 +4,19 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Scanner;
 
+class Administrador {
+    private String nomeUsuario;
+    private String senha;
+
+    public Administrador(String nomeUsuario, String senha) {
+        this.nomeUsuario = nomeUsuario;
+        this.senha = senha;
+    }
+
+    public boolean autenticar(String nomeUsuario, String senha) {
+        return this.nomeUsuario.equals(nomeUsuario) && this.senha.equals(senha);
+    }
+}
 class Voo {
     // ... outros membros da classe ...
 
@@ -77,14 +90,33 @@ class Passageiro {
 
 public class SistemaAeroporto {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        Administrador admin = new Administrador("admin", "voador");
+
+        // Autenticação do administrador
+        System.out.print("Nome de usuário: ");
+        String nomeUsuario = scanner.nextLine();
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        if (admin.autenticar(nomeUsuario, senha)) {
+            // O administrador está autenticado, continue com o sistema
+            iniciarSistema(scanner);
+        } else {
+            System.out.println("Acesso negado. Encerrando o sistema.");
+            scanner.close();
+        }
+    }
+
+    private static void iniciarSistema(Scanner scanner) {
         List<Voo> voosDisponiveis = new ArrayList<>();
+        Stack<Passageiro> passageirosCheckin = new Stack<>();
 
         // Exemplo de voos disponíveis
         voosDisponiveis.add(new Voo(2014, "São Paulo", "Rio de Janeiro", "08:00", "09:30", 2));
         voosDisponiveis.add(new Voo(2001, "New York", "Los Angeles", "10:00", "12:00", 2));
-        voosDisponiveis.add(new Voo(1945, "Rio de Janeiro", "Salvador", "11:00", "13:10", 2));
-
-        Scanner scanner = new Scanner(System.in);
+        voosDisponiveis.add(new Voo(2002, "Rio de Janeiro", "Salvador", "11:00", "13:10", 2));
 
         while (true) {
             exibirMenu();
@@ -114,6 +146,9 @@ public class SistemaAeroporto {
         }
     }
 
+
+
+
     private static void fazerCheckin(Scanner scanner) {
     }
 
@@ -128,7 +163,9 @@ public class SistemaAeroporto {
     }
 
     private static void fazerReserva(List<Voo> voosDisponiveis, Scanner scanner) {
-        System.out.print("Digite o número do voo: ");
+        System.out.print("Os Números dos voos são 2014, 2001 e 2002.");
+        scanner.nextLine();
+        System.out.print("Selecione o número do voo desejado: ");
         int numeroVoo = scanner.nextInt();
         Voo vooSelecionado = null;
 
