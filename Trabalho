@@ -4,15 +4,18 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Scanner;
 
-class Administrador {
+class Administrador { //Classe de administrador
     private String nomeUsuario;
     private String senha;
 
-    public Administrador(String nomeUsuario, String senha) {
+    //Construtor para criar um objeto Administrador com nome de usuário e senha
+    public Administrador(String nomeUsuario, String senha) { //Construtor para criar um objeto Administrador com nome de usuário e senha
         this.nomeUsuario = nomeUsuario;
         this.senha = senha;
     }
 
+
+    //Método para autenticar o administrador com base no nome de usuário e senha fornecidos
     public boolean autenticar(String nomeUsuario, String senha) {
         return this.nomeUsuario.equals(nomeUsuario) && this.senha.equals(senha);
     }
@@ -51,6 +54,7 @@ class Voo {
         return numero;
     }
 
+    //Adiciona uma reserva pendente ao voo se houver espaço.
     public boolean adicionarReservaPendente(Passageiro passageiro) {
         if (reservasPendentes.size() < maxPassageiros) {
             reservasPendentes.add(passageiro);
@@ -59,13 +63,15 @@ class Voo {
         return false;
     }
 
-    public void processarReservas() {
+    //Processa as reservas pendentes do voo.
+    public void processarReservas() { // Faz o processamento das reservas
         while (!reservasPendentes.isEmpty()) {
             Passageiro passageiro = reservasPendentes.remove(0);
             System.out.println("Reserva confirmada para o voo " + numero + " por " + passageiro.getNome() + ".");
         }
     }
 
+    // Verifica se o voo está cheio.
     public boolean estaCheio() {
         return reservasPendentes.size() >= maxPassageiros;
     }
@@ -88,17 +94,20 @@ class Passageiro {
     }
 }
 
+//Método principal que inicia o programa. Autentica o administrador e, se bem-sucedido, chama o método
 public class SistemaAeroporto {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Administrador admin = new Administrador("admin", "voador");
+        Administrador admin = new Administrador("admin", "admin");
 
         // Autenticação do administrador
+        System.out.println("---------------------------------");
         System.out.print("Nome de usuário: ");
         String nomeUsuario = scanner.nextLine();
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
+        System.out.println("---------------------------------");
 
         if (admin.autenticar(nomeUsuario, senha)) {
             // O administrador está autenticado, continue com o sistema
@@ -117,6 +126,7 @@ public class SistemaAeroporto {
         voosDisponiveis.add(new Voo(2014, "São Paulo", "Rio de Janeiro", "08:00", "09:30", 2));
         voosDisponiveis.add(new Voo(2001, "New York", "Los Angeles", "10:00", "12:00", 2));
         voosDisponiveis.add(new Voo(2002, "Rio de Janeiro", "Salvador", "11:00", "13:10", 2));
+        voosDisponiveis.add(new Voo(2003, "Rio Branco", "Goias", "11:00", "13:10", 2));
 
         while (true) {
             exibirMenu();
@@ -131,7 +141,7 @@ public class SistemaAeroporto {
                     processarReservas(voosDisponiveis);
                     break;
                 case 3:
-                    fazerCheckin(scanner);
+                    fazerCheckin(scanner, passageirosCheckin);
                     break;
                 case 4:
                     exibirInformacoesVoos(voosDisponiveis);
@@ -146,20 +156,20 @@ public class SistemaAeroporto {
         }
     }
 
-
-
-
     private static void fazerCheckin(Scanner scanner) {
     }
 
     private static void exibirMenu() {
         System.out.println("\nOpções:");
-        System.out.println("1. Fazer reserva");
-        System.out.println("2. Processar reservas pendentes");
-        System.out.println("3. Fazer check-in");
-        System.out.println("4. Exibir informações sobre voos");
-        System.out.println("5. Sair");
-        System.out.print("Escolha uma opção: ");
+        System.out.println("---------------------------------");
+        System.out.println("| 1. Fazer reserva");
+        System.out.println("| 2. Processar reservas pendentes");
+        System.out.println("| 3. Fazer check-in");
+        System.out.println("| 4. Exibir informações sobre voos");
+        System.out.println("| 5. Sair");
+        System.out.println("---------------------------------");
+        System.out.println("Escolha uma opção: ");
+        System.out.println("---------------------------------");
     }
 
     private static void fazerReserva(List<Voo> voosDisponiveis, Scanner scanner) {
@@ -203,15 +213,17 @@ public class SistemaAeroporto {
 
     private static void processarReservas(List<Voo> voosDisponiveis) {
         for (Voo voo : voosDisponiveis) {
-            if (!voo.estaCheio()) {
+            if (!voo.reservasPendentes.isEmpty()) {
                 System.out.println("Existem reservas pendentes para o voo " + voo.getNumero());
                 voo.processarReservas();
+            } else {
+                System.out.println("O voo " + voo.getNumero() + " não tem reservas pendentes.");
             }
         }
     }
 
 
-    private static void fazerCheckin(Scanner scanner, Stack<Passageiro> passageirosCheckin) {
+    public static void fazerCheckin(Scanner scanner, Stack<Passageiro> passageirosCheckin) {
         System.out.print("Digite seu nome para fazer o check-in: ");
         String nomeCheckin = scanner.nextLine();
         boolean encontrado = false;
